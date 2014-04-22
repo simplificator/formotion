@@ -120,6 +120,11 @@ module Formotion
               if result[:original_image].respond_to?(:resize_image_to_size) and row.max_image_size
                 result[:original_image]=result[:original_image].resize_image_to_size(row.max_image_size, false)
               end
+
+              if source == :camera && self.row.store_image.present?
+                UIImageWriteToSavedPhotosAlbum(result[:original_image], nil, nil, nil)
+              end
+
               row.value = result[:original_image]
             end
           end

@@ -102,6 +102,8 @@ module Formotion
       :max_image_size,
       # Display image in this size in the form
       :display_image_size,
+      # Store taken photos to the camera roll
+      :store_image,
       # Font for String and Text rows
       :font,
       # Display an inputAccessoryView when editing a StringRow.
