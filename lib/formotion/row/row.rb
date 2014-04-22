@@ -100,6 +100,8 @@ module Formotion
       :maximum_date,
       #-Resize image when needed (size as Array [1500,1500])
       :max_image_size,
+      # Display image in this size in the form
+      :display_image_size,
       # Font for String and Text rows
       :font,
       # Display an inputAccessoryView when editing a StringRow.
