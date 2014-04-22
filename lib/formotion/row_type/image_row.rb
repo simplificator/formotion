@@ -20,7 +20,12 @@ module Formotion
         observe(self.row, "value") do |old_value, new_value|
           @image_view.image = new_value
           if new_value
-            self.row.row_height = 200
+            if self.row.display_image_size.present?
+              self.row.row_height = row.display_image_size + Formotion::RowType::Base.field_buffer
+            else
+              self.row.row_height = 200
+            end
+
             cell.accessoryView = cell.editingAccessoryView = nil
           else
             self.row.row_height = 44
@@ -37,21 +42,41 @@ module Formotion
         @image_view.backgroundColor = UIColor.clearColor
         cell.addSubview(@image_view)
 
-        cell.swizzle(:layoutSubviews) do
-          def layoutSubviews
-            old_layoutSubviews
+        if row.display_image_size.present?
+          @image_view.frame = CGRectMake(0, 0, row.display_image_size, row.display_image_size)
 
-            # viewWithTag is terrible, but I think it's ok to use here...
-            formotion_field = self.viewWithTag(IMAGE_VIEW_TAG)
+          cell.swizzle(:layoutSubviews) do
+            def layoutSubviews
+              formotion_field = self.viewWithTag(IMAGE_VIEW_TAG)
+              field_frame = formotion_field.frame
 
-            field_frame = formotion_field.frame
-            field_frame.origin.y = 10
-            field_frame.origin.x = self.textLabel.frame.origin.x + self.textLabel.frame.size.width + Formotion::RowType::Base.field_buffer
-            field_frame.size.width  = self.frame.size.width - field_frame.origin.x - Formotion::RowType::Base.field_buffer
-            field_frame.size.height = self.frame.size.height - Formotion::RowType::Base.field_buffer
-            formotion_field.frame = field_frame
+              old_layoutSubviews
+
+              # viewWithTag is terrible, but I think it's ok to use here...
+              field_frame.origin.y = 10
+              field_frame.origin.x = self.frame.size.width - formotion_field.frame.size.width - Formotion::RowType::Base.field_buffer
+              formotion_field.frame = field_frame
+            end
+          end
+        else
+          cell.swizzle(:layoutSubviews) do
+            def layoutSubviews
+              old_layoutSubviews
+
+              # viewWithTag is terrible, but I think it's ok to use here...
+              formotion_field = self.viewWithTag(IMAGE_VIEW_TAG)
+
+              field_frame = formotion_field.frame
+              field_frame.origin.y = 10
+              field_frame.origin.x = self.textLabel.frame.origin.x + self.textLabel.frame.size.width + Formotion::RowType::Base.field_buffer
+              field_frame.size.width  = self.frame.size.width - field_frame.origin.x - Formotion::RowType::Base.field_buffer
+              field_frame.size.height = self.frame.size.height - Formotion::RowType::Base.field_buffer
+              formotion_field.frame = field_frame
+            end
           end
         end
+
+        cell
       end
 
       def on_select(tableView, tableViewDelegate)
