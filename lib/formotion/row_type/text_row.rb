@@ -22,6 +22,7 @@ module Formotion
         field.returnKeyType = row.return_key || UIReturnKeyDefault
         field.autocapitalizationType = row.auto_capitalization if row.auto_capitalization
         field.autocorrectionType = row.auto_correction if row.auto_correction
+        field.inputAccessoryView = input_accessory_view(row.input_accessory) if row.input_accessory
 
         # must be set prior to placeholder!
         field.font = BW::Font.new(row.font) if row.font
@@ -87,6 +88,44 @@ module Formotion
 
       def dismissKeyboard
         field.resignFirstResponder
+      end
+
+      # Creates the inputAccessoryView to show
+      # if input_accessory property is set on row.
+      # :done is currently the only supported option.
+      def input_accessory_view(input_accessory)
+        type  = (input_accessory || {})[:type]
+        title = (input_accessory || {})[:title]
+        case type
+        when :done
+          @input_accessory ||= begin
+            tool_bar = UIToolbar.alloc.initWithFrame([[0, 0], [0, 44]])
+            tool_bar.autoresizingMask = UIViewAutoresizingFlexibleWidth
+            tool_bar.translucent = true
+
+            left_space = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
+                UIBarButtonSystemItemFlexibleSpace,
+                target: nil,
+                action: nil)
+
+            done_button = UIBarButtonItem.alloc.initWithTitle(
+                title,
+                style: UIBarButtonItemStyleDone,
+                target: self,
+                action: :done_editing)
+
+            tool_bar.items = [left_space, done_button]
+
+            tool_bar
+          end
+        else
+          nil
+        end
+      end
+
+      # Callback for "Done" button in input_accessory_view
+      def done_editing
+        dismissKeyboard
       end
 
     end
