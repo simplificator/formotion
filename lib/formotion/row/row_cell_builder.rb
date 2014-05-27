@@ -14,7 +14,7 @@ module Formotion
     def self.make_cell(row)
       cell, text_field = nil
 
-      cell = UITableViewCell.alloc.initWithStyle(row.object.cell_style, reuseIdentifier:row.reuse_identifier)
+      cell = Cell.alloc.initWithStyle(row.object.cell_style, reuseIdentifier:row.reuse_identifier)
 
       cell.accessoryType = cell.editingAccessoryType = UITableViewCellAccessoryNone
 
