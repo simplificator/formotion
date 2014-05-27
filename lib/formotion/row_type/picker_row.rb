@@ -9,6 +9,8 @@ module Formotion
       include RowType::MultiChoiceRow
 
       def input_accessory_view(input_accessory)
+        type  = (input_accessory || {})[:type]
+        title = (input_accessory || {})[:title]
         case input_accessory
         when :done
           @input_accessory ||= begin
@@ -21,8 +23,9 @@ module Formotion
                 target: nil,
                 action: nil)
 
-            done_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
-                UIBarButtonSystemItemDone,
+            done_button = UIBarButtonItem.alloc.initWithTitle(
+                title,
+                style: UIBarButtonItemStyleDone,
                 target: self,
                 action: :done_editing)
 
