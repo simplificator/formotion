@@ -116,7 +116,9 @@ module Formotion
       # if input_accessory property is set on row.
       # :done is currently the only supported option.
       def input_accessory_view(input_accessory)
-        case input_accessory
+        type  = (input_accessory || {})[:type]
+        title = (input_accessory || {})[:title]
+        case type
         when :done
           @input_accessory ||= begin
             tool_bar = UIToolbar.alloc.initWithFrame([[0, 0], [0, 44]])
@@ -128,8 +130,9 @@ module Formotion
                 target: nil,
                 action: nil)
 
-            done_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
-                UIBarButtonSystemItemDone,
+            done_button = UIBarButtonItem.alloc.initWithTitle(
+                title,
+                style: UIBarButtonSystemItemDone,
                 target: self,
                 action: :done_editing)
 
