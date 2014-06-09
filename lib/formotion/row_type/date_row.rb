@@ -28,12 +28,18 @@ module Formotion
           formatter = NSDateFormatter.new
 
           date_style = self.row.format
-          if date_style && date_style.to_s[-5..-1] != "style"
-            date_style = (date_style.to_s + "_style").to_sym
+
+          if date_style == :string
+            formatter.dateFormat = self.row.date_format
+          else
+            if date_style && date_style.to_s[-5..-1] != "style"
+              date_style = (date_style.to_s + "_style").to_sym
+            end
+
+            formatter.dateStyle = self.row.send(:const_int_get, "NSDateFormatter", date_style || NSDateFormatterShortStyle)
+            formatter.timeStyle = NSDateFormatterNoStyle
           end
 
-          formatter.dateStyle = self.row.send(:const_int_get, "NSDateFormatter", date_style || NSDateFormatterShortStyle)
-          formatter.timeStyle = NSDateFormatterNoStyle
           formatter
         end
       end
@@ -57,6 +63,8 @@ module Formotion
           picker.date = self.date_value || Time.now
           picker.countDownDuration = self.row.value if row.picker_mode == :countdown
           picker.minuteInterval = self.row.minute_interval if self.row.minute_interval
+          picker.minimumDate = self.row.minimum_date if self.row.minimum_date
+          picker.maximumDate = self.row.maximum_date if self.row.maximum_date
 
           picker.when(UIControlEventValueChanged) do
             if self.row.picker_mode == :countdown

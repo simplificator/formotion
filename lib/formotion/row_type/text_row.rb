@@ -67,10 +67,10 @@ module Formotion
             formotion_field.sizeToFit
 
             field_frame = formotion_field.frame
-            field_frame.origin.y = 10
-            field_frame.origin.x = self.textLabel.frame.origin.x + self.textLabel.frame.size.width + Formotion::RowType::Base.field_buffer
-            field_frame.size.width  = self.frame.size.width - field_frame.origin.x - Formotion::RowType::Base.field_buffer
-            field_frame.size.height = self.frame.size.height - Formotion::RowType::Base.field_buffer
+            field_frame.origin.y = 5 + self.textLabel.frame.size.height
+            field_frame.origin.x = self.textLabel.frame.origin.x - 5
+            field_frame.size.width  = self.frame.size.width - Formotion::RowType::Base.field_buffer
+            field_frame.size.height = self.frame.size.height - field_frame.origin.y - Formotion::RowType::Base.field_buffer
             formotion_field.frame = field_frame
           end
         end
@@ -90,42 +90,9 @@ module Formotion
         field.resignFirstResponder
       end
 
-      # Creates the inputAccessoryView to show
-      # if input_accessory property is set on row.
-      # :done is currently the only supported option.
-      def input_accessory_view(input_accessory)
-        type  = (input_accessory || {})[:type]
-        title = (input_accessory || {})[:title]
-        case type
-        when :done
-          @input_accessory ||= begin
-            tool_bar = UIToolbar.alloc.initWithFrame([[0, 0], [0, 44]])
-            tool_bar.autoresizingMask = UIViewAutoresizingFlexibleWidth
-            tool_bar.translucent = true
-
-            left_space = UIBarButtonItem.alloc.initWithBarButtonSystemItem(
-                UIBarButtonSystemItemFlexibleSpace,
-                target: nil,
-                action: nil)
-
-            done_button = UIBarButtonItem.alloc.initWithTitle(
-                title,
-                style: UIBarButtonItemStyleDone,
-                target: self,
-                action: :done_editing)
-
-            tool_bar.items = [left_space, done_button]
-
-            tool_bar
-          end
-        else
-          nil
-        end
-      end
-
-      # Callback for "Done" button in input_accessory_view
       def done_editing
         dismissKeyboard
+        self.row.done_action.call unless self.row.done_action.nil?
       end
 
     end
