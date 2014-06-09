@@ -86,6 +86,10 @@ module Formotion
         field.becomeFirstResponder
       end
 
+      def after_build(cell)
+        field.inputAccessoryView = input_accessory_view(row.input_accessory) if row.input_accessory
+      end
+
       def dismissKeyboard
         field.resignFirstResponder
       end
