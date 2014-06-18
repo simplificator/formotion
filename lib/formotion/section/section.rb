@@ -8,6 +8,10 @@ module Formotion
       # Displayed below the entire section; good for giving
       # detailed information regarding the section.
       :footer,
+      # height of the hader, defaults to UITableViewAutomaticDimension
+      :header_height,
+      # height of the footer, defaults to UITableViewAutomaticDimension
+      :footer_height,
       # Arranges the section as a 'radio' section,
       # such that only one row can be checked at a time.
       :select_one,
