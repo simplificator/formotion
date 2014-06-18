@@ -52,11 +52,19 @@ module Formotion
     end
 
     def tableView(tableView, titleForHeaderInSection:section)
-      section = self.sections[section].title
+      self.sections[section].title
     end
 
     def tableView(tableView, titleForFooterInSection:section)
       self.sections[section].footer
+    end
+
+    def tableView(table_view, heightForHeaderInSection: section)
+      self.sections[section].header_height || UITableViewAutomaticDimension
+    end
+
+    def tableView(table_view, heightForFooterInSection: section)
+      self.sections[section].footer_height || UITableViewAutomaticDimension
     end
 
     def tableView(tableView, cellForRowAtIndexPath:indexPath)
